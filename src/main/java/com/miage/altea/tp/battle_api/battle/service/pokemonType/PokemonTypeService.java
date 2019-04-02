@@ -2,6 +2,7 @@ package com.miage.altea.tp.battle_api.battle.service.pokemonType;
 
 import com.miage.altea.tp.battle_api.battle.bo.PokemonType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -66,5 +67,12 @@ public class PokemonTypeService  implements IPokemontTypeService{
     public List<PokemonType> getVoidlistPokemons(){
         List<PokemonType> listPT = new ArrayList<>();
         return listPT;
+    }
+
+    @Autowired
+    @Override
+    @Qualifier("restTemplate")
+    public void setRestTemplate(RestTemplate restTemplate) {
+        rT= restTemplate;
     }
 }

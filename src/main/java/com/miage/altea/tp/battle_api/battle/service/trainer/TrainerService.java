@@ -24,7 +24,6 @@ public class TrainerService implements ITrainerService {
     RestTemplate rT;
 
     @Override
-    @Cacheable(value = "trainers")
     public List<Trainer> listTrainers() {
         var headers = new HttpHeaders();
         headers.setAcceptLanguageAsLocales(List.of(LocaleContextHolder.getLocale()));

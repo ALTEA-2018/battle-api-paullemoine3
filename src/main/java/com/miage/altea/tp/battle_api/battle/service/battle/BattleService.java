@@ -1,12 +1,15 @@
 package com.miage.altea.tp.battle_api.battle.service.battle;
 
 import com.miage.altea.tp.battle_api.battle.bo.*;
+import com.miage.altea.tp.battle_api.battle.service.pokemonType.IPokemontTypeService;
 import com.miage.altea.tp.battle_api.battle.service.trainer.ITrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +21,10 @@ public class BattleService implements IBattleService{
     @Autowired
     IBattlePokemonFactory iBattlePokemonFactory;
 
-    private List<Battle> listBattle;
+    @Autowired
+    IPokemontTypeService pokemontTypeService;
+
+    private List<Battle> listBattle = new ArrayList<>();
 
     @Override
     public Battle createBattle(String train, String oppo){
@@ -28,21 +34,21 @@ public class BattleService implements IBattleService{
 
         BattleTrainer bTrainer = new BattleTrainer();
         bTrainer.setName(train);
-        bTrainer.setNexTurn(true);
-        for(Pokemon p : trainer.getTeam()){
-            PokemonType pokeType = new PokemonType();
-            for(PokemonType pT : trainer.getListPk()) {
-                pokeType = (pT.getId() == p.getId()) ? pT : null;
-            }
-            bTrainer.getTeam().add(iBattlePokemonFactory.createBattlePokemon(pokeType, p.getLevel()));
-        }
+        bTrainer
+                .setTeam(trainer.getTeam().parallelStream()
+                        .map(pokemon -> iBattlePokemonFactory.createBattlePokemon(
+                                pokemontTypeService.getPokemonId(pokemon.getPokemonType()), pokemon.getLevel()))
+                        .collect(Collectors.toList()));
 
         BattleTrainer bOppo = new BattleTrainer();
         bOppo.setName(oppo);
-        bOppo.setNexTurn(false);
-
+        bOppo.setTeam(trainer.getTeam().parallelStream()
+                        .map(pokemon -> iBattlePokemonFactory.createBattlePokemon(
+                                pokemontTypeService.getPokemonId(pokemon.getPokemonType()), pokemon.getLevel()))
+                        .collect(Collectors.toList()));
 
         Battle b = new Battle();
+        b.setUuid(UUID.randomUUID());
         b.setTrainer(bTrainer);
         b.setOpponent(bOppo);
 
@@ -63,5 +69,17 @@ public class BattleService implements IBattleService{
             return battle.get();
         }
         return null;
+    }
+
+    @Override
+    public Battle attackBattle(String uuid, String attackers){
+        Battle battle = this.listBattle.stream().filter(t -> t.getTrainer().getName().equals(attackers)).findFirst().get();
+        // Trouver l'attaquant
+        // trouver le premier poké
+        // Attaquer
+        // changer pv premier poke (ou état si ko et alive)
+        // reset la battle
+        // renvoyer la battle
+        return new Battle();
     }
 }

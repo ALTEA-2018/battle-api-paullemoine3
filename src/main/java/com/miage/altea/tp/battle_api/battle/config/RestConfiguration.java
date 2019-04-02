@@ -14,7 +14,7 @@ public class RestConfiguration {
     @Value("${trainer.service.username}")
     private String username;
 
-    @Value("${trainer.service.password}")
+    @Value("${spring.security.user.password}")
     private String password;
 
     @Bean

@@ -1,15 +1,10 @@
 package com.miage.altea.tp.battle_api.battle.bo;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.annotation.Generated;
-import javax.persistence.GeneratedValue;
+import java.util.UUID;
 
 public class Battle {
 
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    private String uuid;
+    private UUID uuid;
 
     private BattleTrainer trainer;
 
@@ -27,11 +22,11 @@ public class Battle {
         this.nextTurn = nextTurn;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
