@@ -1,12 +1,19 @@
 package com.miage.altea.tp.battle_api.battle.bo;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.annotation.Generated;
+import javax.persistence.GeneratedValue;
+
 public class Battle {
 
-    private int uuid;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    private String uuid;
 
-    private Trainer trainer;
+    private BattleTrainer trainer;
 
-    private Trainer opponent;
+    private BattleTrainer opponent;
 
     private boolean nextTurn;
 
@@ -14,33 +21,33 @@ public class Battle {
     public Battle() {
     }
 
-    public Battle(Trainer trainer, Trainer opponent, boolean nextTurn) {
+    public Battle(BattleTrainer trainer, BattleTrainer opponent, boolean nextTurn) {
         this.trainer = trainer;
         this.opponent = opponent;
         this.nextTurn = nextTurn;
     }
 
-    public int getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(int uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
-    public Trainer getTrainer() {
+    public BattleTrainer getTrainer() {
         return trainer;
     }
 
-    public void setTrainer(Trainer trainer) {
+    public void setTrainer(BattleTrainer trainer) {
         this.trainer = trainer;
     }
 
-    public Trainer getOpponent() {
+    public BattleTrainer getOpponent() {
         return opponent;
     }
 
-    public void setOpponent(Trainer opponent) {
+    public void setOpponent(BattleTrainer opponent) {
         this.opponent = opponent;
     }
 
