@@ -12,6 +12,7 @@ public class BattlePokemonFactory implements IBattlePokemonFactory{
 
     public BattlePokemon createBattlePokemon(PokemonType pokemonType, int level){
         BattlePokemon battlePoke = new BattlePokemon();
+        battlePoke.setId(pokemonType.getId());
         battlePoke.setHp(pokemonType.getStats().getHp());
         battlePoke.setMaxHp(pokemonType.getStats().getHp());
         battlePoke.setAttack(statsCalculator.calculateState(pokemonType.getStats().getAttack(), level));

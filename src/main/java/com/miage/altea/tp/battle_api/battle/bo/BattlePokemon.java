@@ -1,7 +1,7 @@
 package com.miage.altea.tp.battle_api.battle.bo;
 
 public class BattlePokemon {
-
+    int id;
     int hp;
     int maxHp;
     int attack;
@@ -11,9 +11,16 @@ public class BattlePokemon {
     boolean ko;
     boolean alive;
     PokemonType type;
-    boolean nextTurn;
 
     public BattlePokemon() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getHp() {
@@ -86,13 +93,5 @@ public class BattlePokemon {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
-    }
-
-    public boolean isNextTurn() {
-        return nextTurn;
-    }
-
-    public void setNextTurn(boolean nextTurn) {
-        this.nextTurn = nextTurn;
     }
 }

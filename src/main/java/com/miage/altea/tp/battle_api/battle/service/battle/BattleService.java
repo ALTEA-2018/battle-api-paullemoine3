@@ -47,10 +47,20 @@ public class BattleService implements IBattleService{
                                 pokemontTypeService.getPokemonId(pokemon.getPokemonType()), pokemon.getLevel()))
                         .collect(Collectors.toList()));
 
+
         Battle b = new Battle();
         b.setUuid(UUID.randomUUID());
         b.setTrainer(bTrainer);
         b.setOpponent(bOppo);
+        BattlePokemon bTrain = getFirstPokemon(b, 0);
+        BattlePokemon bOpp = getFirstPokemon(b, 1);
+        if(bTrain.getSpeed() >= bOpp.getSpeed()){
+            b.getTrainer().setNextTurn(true);
+            b.getOpponent().setNextTurn(false);
+        }else {
+            b.getOpponent().setNextTurn(true);
+            b.getTrainer().setNextTurn(false);
+        }
 
         this.listBattle.add(b);
 
@@ -73,13 +83,84 @@ public class BattleService implements IBattleService{
 
     @Override
     public Battle attackBattle(String uuid, String attackers){
-        Battle battle = this.listBattle.stream().filter(t -> t.getTrainer().getName().equals(attackers)).findFirst().get();
+        Battle battle;
+        battle = getBattle(uuid);
+        BattleTrainer battleTrainer = battle.getTrainer();
+        BattleTrainer battleOpponent = battle.getOpponent();
+
+        BattlePokemon bTrain = getFirstPokemon(battle, 0);
+        BattlePokemon bOpp = getFirstPokemon(battle, 1);
+
+        if(bTrain != null || bOpp.getType() != null) {
+            if (battleTrainer.isNextTurn() && battleTrainer.getName().equals(attackers)) {
+                int hpTrain =bTrain.getHp();
+                int hpOpp = bOpp.getHp();
+                if(bOpp.getHp() > bTrain.getAttack()){
+                    bOpp.setHp(bOpp.getHp()-bTrain.getAttack());
+                    battle.getTrainer().getTeam().remove(0);
+                    battle.getTrainer().getTeam().add(bTrain);
+                    battleOpponent.getTeam().remove(0);
+                    battleOpponent.getTeam().add(bOpp);
+                }else {
+                    bOpp.setHp(0);
+                    bOpp.setKo(true);
+                    bOpp.setAlive(false);
+                    battleOpponent.getTeam().remove(0);
+                    battleOpponent.getTeam().add(bOpp);
+                }
+
+            } else if (battleOpponent.isNextTurn() && battleOpponent.getName().equals(attackers)) {
+
+            }
+        }
         // Trouver l'attaquant
-        // trouver le premier poké
+        // trouver le premier poké // check
         // Attaquer
         // changer pv premier poke (ou état si ko et alive)
         // reset la battle
         // renvoyer la battle
         return new Battle();
     }
+
+
+    public BattlePokemon getFirstPokemon(Battle battle, int role_user){
+        switch (role_user){
+            case 0 :
+                if(!battle.getTrainer().getTeam().isEmpty()){
+                    if(check(battle.getTrainer().getTeam().get(0)))
+                    return battle.getTrainer().getTeam().get(0);
+                }
+                break;
+            case 1:
+                if(!battle.getOpponent().getTeam().isEmpty()){
+                    if(check(battle.getOpponent().getTeam().get(0)))
+                    return battle.getOpponent().getTeam().get(0);
+                }
+                break;
+        }
+
+        return null;
+    }
+
+    public boolean check(BattlePokemon bP) {
+        if(checkKo(bP) && checkAlive(bP)){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkKo(BattlePokemon bP){
+        if(!bP.isKo()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkAlive(BattlePokemon bP){
+        if(bP.isAlive()){
+            return true;
+        }
+        return false;
+    }
+
 }
